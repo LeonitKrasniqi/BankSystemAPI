@@ -2,6 +2,7 @@ package controllers;
 
 import dto.AccountDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import services.AccountService;
@@ -14,10 +15,15 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/")
-    public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
-        AccountDto createdAccount = accountService.createAccount(accountDto);
-        return ResponseEntity.ok(createdAccount);
+    public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto request) {
+        String name = request.getName();
+        double amount = request.getAmount();
+
+        AccountDto createdAccount = accountService.createAccount(name, amount);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<AccountDto> getAccountById(@PathVariable("id") Integer id) {

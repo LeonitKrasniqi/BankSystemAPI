@@ -15,8 +15,11 @@ import java.util.Optional;
 public class AccountService  {
     private final AccountRepository accountRepository;
 
-    public AccountDto createAccount(AccountDto accountDto) {
-        Account account = convertToEntity(accountDto);
+    public AccountDto createAccount(String name, double amount) {
+        Account account = Account.builder()
+                .name(name)
+                .amount(amount)
+                .build();
         Account savedAccount = accountRepository.save(account);
         return convertToDto(savedAccount);
     }
