@@ -14,14 +14,21 @@ import java.util.Optional;
 @Slf4j
 public class AccountService  {
     private final AccountRepository accountRepository;
+    public AccountDto createAccount(AccountDto accountDto) throws Exception {
+        try {
+            Optional<Account> existingAccount = accountRepository.findById(accountDto.getId());
+            if (existingAccount.isPresent()) {
+                throw new IllegalArgumentException("Account with ID " + accountDto.getId() + " already exists");
+            }
 
-    public AccountDto createAccount(String name, double amount) {
-        Account account = Account.builder()
-                .name(name)
-                .amount(amount)
-                .build();
-        Account savedAccount = accountRepository.save(account);
-        return convertToDto(savedAccount);
+            Account account = convertToEntity(accountDto);
+
+            account = accountRepository.save(account);
+
+            return convertToDto(account);
+        } catch (Exception ex) {
+            throw new Exception("Failed to create account: " + ex.getMessage());
+        }
     }
 
     public AccountDto findAccountById(int id) {
