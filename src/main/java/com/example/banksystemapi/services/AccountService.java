@@ -1,11 +1,11 @@
-package services;
+package com.example.banksystemapi.services;
 
-import dto.AccountDto;
+import com.example.banksystemapi.dto.AccountDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import model.Account;
+import com.example.banksystemapi.model.Account;
 import org.springframework.stereotype.Service;
-import repository.AccountRepository;
+import com.example.banksystemapi.repository.AccountRepository;
 
 import java.util.Optional;
 

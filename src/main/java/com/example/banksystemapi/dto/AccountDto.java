@@ -1,4 +1,4 @@
-package dto;
+package com.example.banksystemapi.dto;
 
 import lombok.*;
 

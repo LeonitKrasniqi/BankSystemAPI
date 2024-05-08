@@ -1,11 +1,11 @@
-package controllers;
+package com.example.banksystemapi.controller;
 
-import dto.AccountDto;
+import com.example.banksystemapi.dto.AccountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import services.AccountService;
+import com.example.banksystemapi.services.AccountService;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
