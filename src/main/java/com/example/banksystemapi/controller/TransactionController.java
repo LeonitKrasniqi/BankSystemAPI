@@ -36,5 +36,15 @@ public class TransactionController {
         }
     }
 
+    @PostMapping("/withdraw")
+    public ResponseEntity<String> withdrawMoney(@RequestBody TransactionDto transactionDto) {
+        try {
+            transactionService.withdraw(transactionDto);
+            return ResponseEntity.ok("Withdrawal successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
+        }
+    }
+
 
 }

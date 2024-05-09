@@ -71,6 +71,30 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
+    public void withdraw(TransactionDto transactionDto) throws Exception {
+        AccountDto account = accountService.findAccountById(transactionDto.getOriginatingAccountId());
+
+        if (transactionDto.getAmount() < 0) {
+            throw new IllegalArgumentException("Withdrawal amount cannot be negative");
+        }
+
+        if (account.getAmount() < transactionDto.getAmount()) {
+            throw new IllegalArgumentException("Insufficient funds in account");
+        }
+
+        double withdrawalAmount = transactionDto.getAmount();
+        account.setAmount(account.getAmount() - withdrawalAmount);
+        accountRepository.save(accountService.convertToEntity(account));
+
+        Transaction transaction = Transaction.builder()
+                .amount(withdrawalAmount)
+                .description(transactionDto.getDescription())
+                .originatingAccount(accountService.convertToEntity(account))
+                .build();
+
+        transactionRepository.save(transaction);
+    }
+
     public Account convertToEntity(AccountDto accountDto) {
         Account account = new Account();
         account.setId(accountDto.getId());
