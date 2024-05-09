@@ -16,4 +16,6 @@ public class TransactionDto {
     private Integer resultingAccountId;
     private double amount;
     private String description;
+    private Integer bankId;
+
 }

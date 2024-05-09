@@ -1,10 +1,13 @@
 package com.example.banksystemapi.services;
 
 import com.example.banksystemapi.dto.AccountDto;
+import com.example.banksystemapi.dto.BankDto;
 import com.example.banksystemapi.dto.TransactionDto;
 import com.example.banksystemapi.model.Account;
+import com.example.banksystemapi.model.Bank;
 import com.example.banksystemapi.model.Transaction;
 import com.example.banksystemapi.repository.AccountRepository;
+import com.example.banksystemapi.repository.BankRepository;
 import com.example.banksystemapi.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,8 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
     private final AccountRepository accountRepository;
+    private final BankRepository bankRepository;
+    private final BankService bankService;
 
 
     public void transferMoney(TransactionDto transactionDto) throws Exception{
@@ -28,6 +33,16 @@ public class TransactionService {
 
         AccountDto originatingAccount = accountService.findAccountById(transactionDto.getOriginatingAccountId());
         AccountDto resultingAccount = accountService.findAccountById(transactionDto.getResultingAccountId());
+        BankDto bank = bankService.getBank(transactionDto.getBankId());
+
+        double bankFee = bank.getTransactionPercentFeeValue();
+        double amount = transactionDto.getAmount();
+        double transactionFee = amount * (bankFee/100.00);
+        double amountWithFee = amount + transactionFee;
+
+        if (originatingAccount.getAmount() < amountWithFee) {
+            throw new IllegalArgumentException("Insufficient funds in originating account");
+        }
 
         if (transactionDto.getOriginatingAccountId().equals(transactionDto.getResultingAccountId())) {
             throw new IllegalArgumentException("Cannot transfer money from and to the same account");
@@ -37,12 +52,9 @@ public class TransactionService {
             throw new IllegalArgumentException("Transaction amount cannot be negative");
         }
 
-        if (originatingAccount.getAmount() < transactionDto.getAmount()) {
-            throw new IllegalArgumentException("Insufficient funds in originating account");
-        }
 
         double transferAmount = transactionDto.getAmount();
-        originatingAccount.setAmount(originatingAccount.getAmount() - transferAmount);
+        originatingAccount.setAmount(originatingAccount.getAmount() - amountWithFee);
         accountRepository.save(accountService.convertToEntity(originatingAccount));
 
 
@@ -54,6 +66,7 @@ public class TransactionService {
                 .description(transactionDto.getDescription())
                 .originatingAccount(convertToEntity(originatingAccount))
                 .resultingAccount(convertToEntity(resultingAccount))
+                .bank(convertToEntityBank(bank))
                 .build();
 
         transactionRepository.save(transaction);
@@ -126,6 +139,14 @@ public class TransactionService {
         account.setName(accountDto.getName());
         account.setAmount(accountDto.getAmount());
         return account;
+    }
+
+    public Bank convertToEntityBank(BankDto bankDto) {
+        Bank bank = new Bank();
+        bank.setName(bankDto.getName());
+        bank.setTransactionPercentFeeValue(bankDto.getTransactionPercentFeeValue());
+        bank.setId(bankDto.getId());
+        return bank;
     }
 
 

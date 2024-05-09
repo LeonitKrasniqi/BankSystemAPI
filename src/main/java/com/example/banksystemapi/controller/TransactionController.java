@@ -46,12 +46,8 @@ public class TransactionController {
     }
 
     @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<TransactionDto>> getTransactionsByAccountId(@PathVariable Integer accountId) {
-        List<TransactionDto> transactions = transactionService.getTransactionsByAccountId(accountId);
-        if (transactions.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    public List<TransactionDto> getTransactionsByAccountId(@PathVariable Integer accountId) {
+        return transactionService.getTransactionsByAccountId(accountId);
     }
 
 
