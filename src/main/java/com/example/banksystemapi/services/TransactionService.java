@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -94,6 +97,24 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
     }
+
+
+    public List<TransactionDto> getTransactionsByAccountId(Integer accountId) {
+        List<Transaction> transactions = transactionRepository.findByOriginatingAccountIdOrResultingAccountId(accountId, accountId);
+        List<TransactionDto> transactionDtos = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            TransactionDto transactionDto = new TransactionDto();
+            transactionDto.setAmount(transaction.getAmount());
+            transactionDto.setDescription(transaction.getDescription());
+            // Set other transaction attributes as needed
+            transactionDtos.add(transactionDto);
+        }
+
+        return transactionDtos;
+    }
+
+
 
     public Account convertToEntity(AccountDto accountDto) {
         Account account = new Account();
