@@ -35,10 +35,7 @@ public class TransactionService {
         AccountDto resultingAccount = accountService.findAccountById(transactionDto.getResultingAccountId());
         BankDto bank = bankService.getBank(transactionDto.getBankId());
 
-        double bankFee = bank.getTransactionPercentFeeValue();
-        double amount = transactionDto.getAmount();
-        double transactionFee = amount * (bankFee/100.00);
-        double amountWithFee = amount + transactionFee;
+        double amountWithFee = getAmountWithFee(bank, transactionDto.getAmount(), false);
 
         if (originatingAccount.getAmount() < amountWithFee) {
             throw new IllegalArgumentException("Insufficient funds in originating account");
@@ -74,19 +71,23 @@ public class TransactionService {
     }
     public void deposit(TransactionDto transactionDto) throws Exception {
         AccountDto account = accountService.findAccountById(transactionDto.getOriginatingAccountId());
+        BankDto bank = bankService.getBank(transactionDto.getBankId());
+
+        // Normally banks don't take money on deposit.
+        double amountWithFee = getAmountWithFee(bank, transactionDto.getAmount(), true);
 
         if (transactionDto.getAmount() < 0) {
             throw new IllegalArgumentException("Deposit amount cannot be negative");
         }
 
-        double depositAmount = transactionDto.getAmount();
-        account.setAmount(account.getAmount() + depositAmount);
+        account.setAmount(account.getAmount() + amountWithFee);
         accountRepository.save(accountService.convertToEntity(account));
 
         Transaction transaction = Transaction.builder()
-                .amount(depositAmount)
+                .amount(amountWithFee)
                 .description(transactionDto.getDescription())
                 .resultingAccount(convertToEntity(account))
+                .bank(convertToEntityBank(bank))
                 .build();
 
         transactionRepository.save(transaction);
@@ -94,23 +95,26 @@ public class TransactionService {
 
     public void withdraw(TransactionDto transactionDto) throws Exception {
         AccountDto account = accountService.findAccountById(transactionDto.getOriginatingAccountId());
+        BankDto bank = bankService.getBank(transactionDto.getBankId());
+
+        double amountWithFee = getAmountWithFee(bank, transactionDto.getAmount(), false);
 
         if (transactionDto.getAmount() < 0) {
             throw new IllegalArgumentException("Withdrawal amount cannot be negative");
         }
 
-        if (account.getAmount() < transactionDto.getAmount()) {
+        if (account.getAmount() < amountWithFee) {
             throw new IllegalArgumentException("Insufficient funds in account");
         }
 
-        double withdrawalAmount = transactionDto.getAmount();
-        account.setAmount(account.getAmount() - withdrawalAmount);
+        account.setAmount(account.getAmount() - amountWithFee);
         accountRepository.save(accountService.convertToEntity(account));
 
         Transaction transaction = Transaction.builder()
-                .amount(withdrawalAmount)
+                .amount(amountWithFee)
                 .description(transactionDto.getDescription())
                 .originatingAccount(accountService.convertToEntity(account))
+                .bank(convertToEntityBank(bank))
                 .build();
 
         transactionRepository.save(transaction);
@@ -131,7 +135,15 @@ public class TransactionService {
         return transactionDtos;
     }
 
+    private static double getAmountWithFee(BankDto bank, double amount, boolean isDeposit) {
+        double bankFee = bank.getTransactionPercentFeeValue();
+        double transactionFee = amount * (bankFee/100.00);
+        if (isDeposit) {
+            return amount - transactionFee;
 
+        }
+        return amount + transactionFee;
+    }
 
     public Account convertToEntity(AccountDto accountDto) {
         Account account = new Account();
