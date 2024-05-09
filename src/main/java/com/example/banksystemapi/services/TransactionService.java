@@ -21,6 +21,8 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
     private final AccountRepository accountRepository;
+    private final BankService bankService;
+
 
     public void transferMoney(TransactionDto transactionDto) throws Exception{
 

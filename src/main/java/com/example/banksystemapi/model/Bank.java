@@ -20,9 +20,6 @@ public class Bank {
     @OneToMany(mappedBy = "bank")
     private List<Account> accounts;
 
-    private double totalTransactionFeeAmount;
-    private double totalTransferAmount;
-    private double transactionFlatFeeAmount;
     private double transactionPercentFeeValue;
 
 }
