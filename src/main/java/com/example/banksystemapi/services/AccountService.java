@@ -16,6 +16,9 @@ public class AccountService  {
     private final AccountRepository accountRepository;
     public AccountDto createAccount(AccountDto accountDto) throws Exception {
         try {
+            if (accountDto.getAmount() <= 0) {
+                throw new IllegalArgumentException("Account amount must be greater than zero");
+            }
             Optional<Account> existingAccount = accountRepository.findById(accountDto.getId());
             if (existingAccount.isPresent()) {
                 throw new IllegalArgumentException("Account with ID " + accountDto.getId() + " already exists");
