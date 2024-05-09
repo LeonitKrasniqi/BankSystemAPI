@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TransactionController {
     private final TransactionService transactionService;
+
     @PostMapping("/transfer")
     public ResponseEntity<String> transferMoney(@RequestBody TransactionDto transactionDto) {
         try {
@@ -24,4 +25,16 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to transfer money: " + e.getMessage());
         }
     }
+
+    @PostMapping("/deposit")
+    public ResponseEntity<String> depositMoney(@RequestBody TransactionDto transactionDto) {
+        try {
+            transactionService.deposit(transactionDto);
+            return ResponseEntity.ok("Deposit successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
+        }
+    }
+
+
 }

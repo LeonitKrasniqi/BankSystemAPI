@@ -51,6 +51,26 @@ public class TransactionService {
         transactionRepository.save(transaction);
 
     }
+    public void deposit(TransactionDto transactionDto) throws Exception {
+        AccountDto account = accountService.findAccountById(transactionDto.getOriginatingAccountId());
+
+        if (transactionDto.getAmount() < 0) {
+            throw new IllegalArgumentException("Deposit amount cannot be negative");
+        }
+
+        double depositAmount = transactionDto.getAmount();
+        account.setAmount(account.getAmount() + depositAmount);
+        accountRepository.save(accountService.convertToEntity(account));
+
+        Transaction transaction = Transaction.builder()
+                .amount(depositAmount)
+                .description(transactionDto.getDescription())
+                .resultingAccount(convertToEntity(account))
+                .build();
+
+        transactionRepository.save(transaction);
+    }
+
     public Account convertToEntity(AccountDto accountDto) {
         Account account = new Account();
         account.setId(accountDto.getId());
