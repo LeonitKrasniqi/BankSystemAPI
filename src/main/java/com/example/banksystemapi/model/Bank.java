@@ -16,10 +16,11 @@ public class Bank {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private double transactionPercentFeeValue;
 
     @OneToMany(mappedBy = "bank")
     private List<Account> accounts;
 
-    private double transactionPercentFeeValue;
+
 
 }
