@@ -25,6 +25,10 @@ public class TransactionService {
         AccountDto originatingAccount = accountService.findAccountById(transactionDto.getOriginatingAccountId());
         AccountDto resultingAccount = accountService.findAccountById(transactionDto.getResultingAccountId());
 
+        if (transactionDto.getAmount() < 0) {
+            throw new IllegalArgumentException("Transaction amount cannot be negative");
+        }
+
         if (originatingAccount.getAmount() < transactionDto.getAmount()) {
             throw new IllegalArgumentException("Insufficient funds in originating account");
         }
@@ -54,4 +58,7 @@ public class TransactionService {
         account.setAmount(accountDto.getAmount());
         return account;
     }
+
+
+
 }
