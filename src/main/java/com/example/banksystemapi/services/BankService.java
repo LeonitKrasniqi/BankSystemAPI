@@ -1,8 +1,6 @@
 package com.example.banksystemapi.services;
 
-import com.example.banksystemapi.dto.AccountDto;
 import com.example.banksystemapi.dto.BankDto;
-import com.example.banksystemapi.model.Account;
 import com.example.banksystemapi.model.Bank;
 import com.example.banksystemapi.repository.BankRepository;
 import lombok.RequiredArgsConstructor;

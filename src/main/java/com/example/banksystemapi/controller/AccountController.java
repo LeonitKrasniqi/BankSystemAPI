@@ -4,7 +4,6 @@ import com.example.banksystemapi.dto.AccountDto;
 import com.example.banksystemapi.model.Account;
 import com.example.banksystemapi.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +53,6 @@ public class AccountController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account with ID " + id + " does not exist");
             }
         } catch (Exception e) {
-            // Log the error or handle it appropriately
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete account: " + e.getMessage());
         }
     }
