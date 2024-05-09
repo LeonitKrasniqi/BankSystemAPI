@@ -28,6 +28,10 @@ public class TransactionService {
         AccountDto originatingAccount = accountService.findAccountById(transactionDto.getOriginatingAccountId());
         AccountDto resultingAccount = accountService.findAccountById(transactionDto.getResultingAccountId());
 
+        if (transactionDto.getOriginatingAccountId().equals(transactionDto.getResultingAccountId())) {
+            throw new IllegalArgumentException("Cannot transfer money from and to the same account");
+        }
+
         if (transactionDto.getAmount() < 0) {
             throw new IllegalArgumentException("Transaction amount cannot be negative");
         }

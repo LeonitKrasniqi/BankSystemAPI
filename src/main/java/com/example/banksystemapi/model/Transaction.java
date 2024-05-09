@@ -18,8 +18,10 @@ public class Transaction {
     private String description;
 
     @ManyToOne
+    @JoinColumn(name = "originating_account_id")
     private Account originatingAccount;
 
     @ManyToOne
+    @JoinColumn(name = "resulting_account_id")
     private Account resultingAccount;
 }
