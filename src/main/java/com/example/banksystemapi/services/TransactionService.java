@@ -107,7 +107,6 @@ public class TransactionService {
             TransactionDto transactionDto = new TransactionDto();
             transactionDto.setAmount(transaction.getAmount());
             transactionDto.setDescription(transaction.getDescription());
-            // Set other transaction attributes as needed
             transactionDtos.add(transactionDto);
         }
 
