@@ -19,4 +19,8 @@ public class Account {
     private String name;
     private double amount;
 
+    @ManyToOne
+    @JoinColumn(name = "bank_id")
+    private Bank bank;
+
 }

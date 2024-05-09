@@ -48,7 +48,12 @@ public class AccountService  {
     }
 
     public Account convertToEntity(AccountDto accountDto) {
-        return new Account(accountDto.getId(), accountDto.getName(), accountDto.getAmount());
+        Account account = new Account();
+        account.setId(accountDto.getId());
+        account.setName(accountDto.getName());
+        account.setAmount(accountDto.getAmount());
+        return account;
+        //return new Account(accountDto.getId(), accountDto.getName(), accountDto.getAmount());
     }
 
 }
