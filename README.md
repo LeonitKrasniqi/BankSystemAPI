@@ -2,6 +2,10 @@
 
 BankSystemAPI is a Java Spring Boot project designed to facilitate banking operations through a RESTful API. It provides endpoints to manage bank accounts, perform transfers, deposits, and withdrawals.
 
+# How entities interact
+![bank_system](https://github.com/LeonitKrasniqi/BankSystemAPI/assets/102996903/58afd716-5a6e-4f36-84da-64d7e1419182)
+
+
 # Prerequisites
 * Java 17
 * Maven
